@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" type="text/css" href="css/style.css">
+  <script src="js/matrix.js"></script>
+  <title>Сапёр</title>
+</head>
+<body>
+  <h1>Сапёр</h1>
+  <form action="" method="get">
+    Ширина поля: <input id="wF" type="number" name="widthField" min="3" max="30" value=10>
+    <br>
+    Высота поля: <input id="hF" type="number" name="heightField" min="3" max="30" value=10>
+    <br>
+    Количество мин: <input id="nM" type="number" name="numMines" min="3" max="30" value=10>
+    <br>
+    <input type="button" name="startBut" onclick="setTable();" value="Начать новую игру">
+  </form>
+  <br/>
+  <br/>
+  <h2 id="baner"></h2>
+</body>
+</html>

@@ -1,0 +1,168 @@
+"use strict";
+
+var widthField, heightField, numMines;
+var arrField = {};
+
+function setTable() {
+  widthField = document.getElementById("wF").value;
+  heightField = document.getElementById("hF").value;
+  numMines = document.getElementById("nM").value;
+  document.getElementById("baner").innerHTML = "";
+  if (widthField >= 3 && widthField <= 30 && heightField >= 3 && heightField <= 30 && numMines >= 3 && numMines <= 30) {
+    var fld = document.getElementById('field');
+    var body = document.body;
+    var tbl  = document.createElement('table');
+    tbl.id = 'field';
+    for(var i = 0; i < heightField; i++) {
+        var tr = tbl.insertRow();
+        for(var j = 0; j < widthField; j++) {
+            var td = tr.insertCell();
+            td.appendChild(document.createTextNode(''));
+            td.id = "p" + i + j;
+            td.onclick = function(){clickCell();};
+            arrField[td.id] = 0;
+        }
+    }
+    if (fld) {
+        body.replaceChild(tbl, fld);
+    } else {
+        body.appendChild(tbl);
+    }
+    for (var m = 0; m < numMines; m++) {
+        var y = Math.floor((Math.random() * heightField));
+        var x = Math.floor((Math.random() * widthField));
+        if (arrField["p" + y + x] !== 9) {
+            arrField["p" + y + x] = 9;
+        } else {
+            m--;
+        }
+    }
+    for(var i = 0; i < heightField; i++) {
+        for(var j = 0; j < widthField; j++) {
+            if (arrField["p" + i + j] == 9) {
+                var nb = collectNear(i, j);
+                for (var k = 0; k < nb.length; k++) {
+                    if (arrField[nb[k]] != 9) {
+                        arrField[nb[k]]++;
+                    }
+                }
+            }
+        }
+    }
+  } else {
+      document.getElementById("baner").innerHTML = "Разрешённые параметры от 3 до 30.";
+  }
+}
+
+function clickCell() {
+    var clickId = event.target.id;
+    if (event.button == 0) {
+        if (arrField[clickId] !== 9) {
+            document.getElementById(clickId).style.background = "white";
+            if (arrField[clickId] !== 0) {
+                document.getElementById(clickId).childNodes[0].nodeValue = arrField[clickId];
+            } else {
+                openNear(clickId);
+            }
+            checkEndGame();
+        } else {
+            showMines();
+            document.getElementById(clickId).style.background = "red";
+            document.getElementById("baner").innerHTML = "Вы проиграли. Попробуйте ещё раз.";    
+        }
+    } else {
+        var checkBG = document.getElementById(clickId).style.background;
+        switch (checkBG) {
+            case '':
+                document.getElementById(clickId).style.background = "blue";
+                break;
+            case 'blue':
+                document.getElementById(clickId).attributes.removeNamedItem("style");
+                break;
+        }
+        checkEndGame();
+    }
+}
+
+function checkEndGame() {
+    var count = 0;
+    var mines = 0;
+    for (var i = 0; i < heightField; i++) {
+        for (var j = 0; j < widthField; j++) {
+            var checkBG = document.getElementById("p" + i + j).style.background;
+            if (arrField["p" + i + j] !== 9 && checkBG == '') count++;
+            if (arrField["p" + i + j] == 9 && checkBG == 'blue') mines++;
+        }
+    }
+    if (count == 0 || mines == numMines) {
+        document.getElementById("baner").innerHTML = "Вы победили. Ура!!!";
+        showMines();
+    }
+}
+
+function openNear(clId) {
+    var i = Number(clId.charAt(1));
+    var j = Number(clId.charAt(2));
+    var idCol = collectNear(i, j);
+    for (var k = 0; k < idCol.length; k++) {
+        var checkBG = document.getElementById(idCol[k]).style.background;
+        if (checkBG !== 'white') {
+            document.getElementById(idCol[k]).style.background = "white";
+            if (arrField[idCol[k]] !== 0) {
+                document.getElementById(idCol[k]).childNodes[0].nodeValue = arrField[idCol[k]];
+            } else {
+                openNear(idCol[k]);
+            }
+        }
+    }
+}
+
+function showMines() {
+    for (var i = 0; i < heightField; i++) {
+         for (var j = 0; j < widthField; j++) {
+              if (arrField["p" + i + j] == 9) {
+                        document.getElementById("p" + i + j).childNodes[0].nodeValue =
+                        '<img src="/images/smile3.jpg" alt="smile3">';
+                        document.getElementById("p" + i + j).style.color = "white";
+              }
+          }
+    }
+}
+
+function collectNear(x, y) {
+    var idCol = [];
+    var n = 0;
+    if (y - 1 >= 0) {
+        idCol[n] = "p" + x + (y - 1);
+        n++;
+    }
+    if (y + 1 < widthField) {
+        idCol[n] = "p" + x + (y + 1);
+        n++;
+    }
+    if (x - 1 >= 0) {
+        idCol[n] = "p" + (x - 1) + y;
+        n++;
+    }
+    if (x + 1 < heightField) {
+        idCol[n] = "p" + (x + 1) + y;
+        n++;
+    }
+    if (y - 1 >= 0 && x - 1 >= 0) {
+        idCol[n] = "p" + (x - 1) + (y - 1);
+        n++;
+    }
+    if (y - 1 >= 0 && x + 1 < heightField) {
+        idCol[n] = "p" + (x + 1) + (y - 1);
+        n++;
+    }
+    if (x - 1 >= 0 && y + 1 < widthField) {
+        idCol[n] = "p" + (x - 1) + (y + 1);
+        n++;
+    }
+    if (x + 1 < heightField && y + 1 < widthField) {
+        idCol[n] = "p" + (x + 1) + (y + 1);
+        n++;
+    }
+    return idCol;
+}
