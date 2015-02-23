@@ -18,7 +18,7 @@ function setTable() {
         for(var j = 0; j < widthField; j++) {
             var td = tr.insertCell();
             td.appendChild(document.createTextNode(''));
-            td.id = "p" + i + j;
+            td.id = i + "." + j;
             td.onclick = function(){clickCell();};
             arrField[td.id] = 0;
         }
@@ -31,15 +31,15 @@ function setTable() {
     for (var m = 0; m < numMines; m++) {
         var y = Math.floor((Math.random() * heightField));
         var x = Math.floor((Math.random() * widthField));
-        if (arrField["p" + y + x] !== 9) {
-            arrField["p" + y + x] = 9;
+        if (arrField[y + "." + x] !== 9) {
+            arrField[y + "." + x] = 9;
         } else {
             m--;
         }
     }
     for(var i = 0; i < heightField; i++) {
         for(var j = 0; j < widthField; j++) {
-            if (arrField["p" + i + j] == 9) {
+            if (arrField[i + "." + j] == 9) {
                 var nb = collectNear(i, j);
                 for (var k = 0; k < nb.length; k++) {
                     if (arrField[nb[k]] != 9) {
@@ -89,9 +89,9 @@ function checkEndGame() {
     var mines = 0;
     for (var i = 0; i < heightField; i++) {
         for (var j = 0; j < widthField; j++) {
-            var checkBG = document.getElementById("p" + i + j).style.background;
-            if (arrField["p" + i + j] !== 9 && checkBG == '') count++;
-            if (arrField["p" + i + j] == 9 && checkBG == 'blue') mines++;
+            var checkBG = document.getElementById(i + "." + j).style.background;
+            if (arrField[i + "." + j] !== 9 && checkBG == '') count++;
+            if (arrField[i + "." + j] == 9 && checkBG == 'blue') mines++;
         }
     }
     if (count == 0 || mines == numMines) {
@@ -101,8 +101,9 @@ function checkEndGame() {
 }
 
 function openNear(clId) {
-    var i = Number(clId.charAt(1));
-    var j = Number(clId.charAt(2));
+    var id = clId.split(".");
+    var i = Number(id[0]);
+    var j = Number(id[1]);
     var idCol = collectNear(i, j);
     for (var k = 0; k < idCol.length; k++) {
         var checkBG = document.getElementById(idCol[k]).style.background;
@@ -120,10 +121,10 @@ function openNear(clId) {
 function showMines() {
     for (var i = 0; i < heightField; i++) {
          for (var j = 0; j < widthField; j++) {
-              if (arrField["p" + i + j] == 9) {
-                        document.getElementById("p" + i + j).childNodes[0].nodeValue =
-                        '<img src="/images/smile3.jpg" alt="smile3">';
-                        document.getElementById("p" + i + j).style.color = "white";
+              if (arrField[i + "." + j] == 9) {
+                        document.getElementById(i + "." + j).childNodes[0].nodeValue =
+                        'Bomb';
+                        document.getElementById(i + "." + j).style.color = "white";
               }
           }
     }
@@ -133,35 +134,35 @@ function collectNear(x, y) {
     var idCol = [];
     var n = 0;
     if (y - 1 >= 0) {
-        idCol[n] = "p" + x + (y - 1);
+        idCol[n] = x + "." + (y - 1);
         n++;
     }
     if (y + 1 < widthField) {
-        idCol[n] = "p" + x + (y + 1);
+        idCol[n] = x + "." + (y + 1);
         n++;
     }
     if (x - 1 >= 0) {
-        idCol[n] = "p" + (x - 1) + y;
+        idCol[n] = (x - 1) + "." + y;
         n++;
     }
     if (x + 1 < heightField) {
-        idCol[n] = "p" + (x + 1) + y;
+        idCol[n] = (x + 1) + "." + y;
         n++;
     }
     if (y - 1 >= 0 && x - 1 >= 0) {
-        idCol[n] = "p" + (x - 1) + (y - 1);
+        idCol[n] = (x - 1) + "." + (y - 1);
         n++;
     }
     if (y - 1 >= 0 && x + 1 < heightField) {
-        idCol[n] = "p" + (x + 1) + (y - 1);
+        idCol[n] = (x + 1) + "." + (y - 1);
         n++;
     }
     if (x - 1 >= 0 && y + 1 < widthField) {
-        idCol[n] = "p" + (x - 1) + (y + 1);
+        idCol[n] = (x - 1) + "." + (y + 1);
         n++;
     }
     if (x + 1 < heightField && y + 1 < widthField) {
-        idCol[n] = "p" + (x + 1) + (y + 1);
+        idCol[n] = (x + 1) + "." + (y + 1);
         n++;
     }
     return idCol;
