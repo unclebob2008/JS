@@ -1,14 +1,15 @@
 "use strict";
 
-var widthField, heightField, numMines;
+var widthField, heightField, procMines, numMines;
 var arrField = {};
 
 function setTable() {
   widthField = document.getElementById("wF").value;
   heightField = document.getElementById("hF").value;
-  numMines = document.getElementById("nM").value;
+  procMines = document.getElementById("pM").value;
+  numMines = widthField * heightField / 100 * procMines;
   document.getElementById("baner").innerHTML = "";
-  if (widthField >= 3 && widthField <= 30 && heightField >= 3 && heightField <= 30 && numMines >= 3 && numMines <= 30) {
+  if (widthField >= 3 && widthField <= 30 && heightField >= 3 && heightField <= 30 && procMines >= 10 && procMines <= 50) {
     var fld = document.getElementById('field');
     var body = document.body;
     var tbl  = document.createElement('table');
@@ -50,7 +51,7 @@ function setTable() {
         }
     }
   } else {
-      document.getElementById("baner").innerHTML = "Разрешённые параметры от 3 до 30.";
+      document.getElementById("baner").innerHTML = "Ширина и высота могут быть от 3 до 30, количество мин от 10 до 50%.";
   }
 }
 
