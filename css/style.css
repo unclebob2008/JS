@@ -1,25 +1,14 @@
-h1,
-p {
-  text-align: center;
+form {
+  font-size: 120%;
 }
 
-img {
-  width: 10px;
-  height: 10px;
+#head01 {
+  color: blue;
 }
 
-#div01 {
-  margin-top: 1OOpx;
-  text-align: center;
-}
-
-#bfImg {
-  cursor: pointer;
-}
-
-#field {
-  border: 2px solid red;
-  border-collapse: collapse;
+#head02 {
+  color: blue;
+  font-size: 100%;
 }
 
 td {
@@ -32,3 +21,48 @@ td {
   border-collapse: collapse;
   cursor: pointer;
 }
+
+img {
+  width: 200px;
+  height: 200px;
+}
+
+#div01 {
+    position: fixed;
+    left: 200px;
+    background-color: lightgrey;
+    width: 500px;
+    padding: 25px;
+    border: 25px solid navy;
+/*    margin: 25px; */
+    text-align: center;
+}
+
+#div03 {
+    position: fixed;
+    left: 300px;
+    background-color: navy;
+    width: 15px;
+    padding: 25px;
+    top: 10px;
+}
+
+#bfImg {
+  cursor: pointer;
+}
+
+#field {
+  border: 2px solid red;
+  border-collapse: collapse;
+}
+
+#div02 td {
+    background-color: white;
+    width: 80px;
+    padding: 10px;
+    border: 0px solid navy;
+/*    margin: 10px; */
+    text-align: left;
+    font-size: 125%;
+}
+
