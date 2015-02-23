@@ -17,7 +17,7 @@ img {
   cursor: pointer;
 }
 
-table {
+#field {
   border: 2px solid red;
   border-collapse: collapse;
 }
