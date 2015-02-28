@@ -38,13 +38,11 @@ img {
     text-align: center;
 }
 
-#div03 {
-    position: fixed;
-    left: 300px;
-    background-color: navy;
-    width: 15px;
-    padding: 25px;
-    top: 10px;
+#div03 .block {
+    background-color: yellow;
+    width: 4px;
+    padding: 13px;
+/*    border: 2px solid green; */
 }
 
 #bfImg {

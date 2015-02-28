@@ -1,5 +1,22 @@
 "use strict";
 
+function setGlass() {
+    var body = document.body;
+    var glass  = document.createElement('div');
+    glass.id = "div03";
+    for(var i = 10; i < 520; i+=26) {
+        for(var j = 100; j < 410; j+=31) {
+            var block = document.createElement('div');
+            block.style.position = "fixed";
+            block.style.top = i + "px";
+            block.style.left = j +"px";
+            block.className = "block";
+            glass.appendChild(block);
+        }
+    }
+    body.appendChild(glass);
+}
+
 function moveBlock(elem) {
     function frameDown() {
         top++;  
