@@ -22,14 +22,10 @@ function setGlass() {
 }
 
 function start() {
-    var matr4x4 = [];
+    var barGor = ["0.3","0.4","0.5","0.6"];
     for (var i = 0; i < 4; i++) {
-        var matr4x4[i] = [];
-        for (var j = 3; j < 7; j++) {
-            matr4x4[i][j] = i + "." + j;
-        }
+        document.getElementById(barGor[i]).style.background = "blue";    
     }
-//    document.getElementById(barGor[i]).style.background = "blue";    
 }
 
 function moveBlock(elem) {
