@@ -1,20 +1,35 @@
 "use strict";
 
 function setGlass() {
+    var top = 50;
     var body = document.body;
     var glass  = document.createElement('div');
     glass.id = "div03";
-    for(var i = 10; i < 520; i+=26) {
-        for(var j = 100; j < 410; j+=31) {
+    for(var i = 0; i < 20; i++) {
+        var left = 100;
+        for(var j = 0; j < 10; j++) {
             var block = document.createElement('div');
-            block.style.position = "fixed";
-            block.style.top = i + "px";
-            block.style.left = j +"px";
+            block.style.top = top + "px";
+            block.style.left = left +"px";
             block.className = "block";
+            block.id = i + "." + j;
             glass.appendChild(block);
+            left += 30
         }
+        top += 26
     }
     body.appendChild(glass);
+}
+
+function start() {
+    var matr4x4 = [];
+    for (var i = 0; i < 4; i++) {
+        var matr4x4[i] = [];
+        for (var j = 3; j < 7; j++) {
+            matr4x4[i][j] = i + "." + j;
+        }
+    }
+//    document.getElementById(barGor[i]).style.background = "blue";    
 }
 
 function moveBlock(elem) {

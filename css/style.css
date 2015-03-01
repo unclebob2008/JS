@@ -39,10 +39,10 @@ img {
 }
 
 #div03 .block {
-    background-color: yellow;
-    width: 4px;
-    padding: 13px;
-/*    border: 2px solid green; */
+  position: fixed;
+  background-color: skyblue;
+  width: 4px;
+  padding: 13px;
 }
 
 #bfImg {
