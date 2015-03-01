@@ -45,6 +45,13 @@ img {
   padding: 13px;
 }
 
+#div03 .blocknow {
+  position: fixed;
+  background-color: blue;
+  width: 4px;
+  padding: 13px;
+}
+
 #bfImg {
   cursor: pointer;
 }

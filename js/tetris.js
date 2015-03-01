@@ -22,30 +22,32 @@ function setGlass() {
 }
 
 function start() {
-    var barGor = ["0.3","0.4","0.5","0.6"];
+    var barCur = ["0.4","0.5","1.4","1.5"];
+    var y = [];
+    var x = [];
     for (var i = 0; i < 4; i++) {
-        document.getElementById(barGor[i]).style.background = "blue";    
+         var id = barCur[i].split(".");
+         y[i] = Number(id[0]);
+         x[i] = Number(id[1]);
+    }
+    moveBlock(y,x);
+}
+
+function moveBlock(y,x) {
+    var d = 0;
+    var timer = setInterval(drawBlock, 1000);
+    function drawBlock() {
+        for (var i = 0; i < 4; i++) {
+            document.getElementById((y[i] + d) + "." + x[i]).className = "blocknow";
+            if (d > 0) {
+                document.getElementById((d - 1) + "." + x[i]).className = "block";
+            }
+        }
+        d++;
+        if (d == 19) {
+            clearInterval(timer);
+        }
     }
 }
 
-function moveBlock(elem) {
-    function frameDown() {
-        top++;  
-        elem.style.top = top + 'px';
-        if (top == 400) clearInterval(id);
-    }
-    function frameUp() {
-        top--;  
-        elem.style.top = top + 'px';
-        if (top == 10) clearInterval(id);
-    }
-    if (elem.style.top !== "400px") {
-        var top = 10;
-        frameDown();
-        var id = setInterval(frameDown, 10);
-    } else {
-        var top = elem.style.top;
-        top = Number(top.replace("px", ""));
-        var id = setInterval(frameUp, 10);
-    }
-}
+
