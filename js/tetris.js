@@ -56,7 +56,6 @@ function startGame() {
 function moveBlock(y,x,dir,gap,step,time) {
     var coord = (dir == "y") ? y : x;
     var delta = coord[0] + gap;
-    console.log(delta);
     var timer = setInterval(drawBlock, time);
     function drawBlock() {
         for (var i = 0; i < 4; i++) {
@@ -73,11 +72,12 @@ function moveBlock(y,x,dir,gap,step,time) {
 }
 
 function pressedKey() {
-        document.addEventListener("keydown", function(pKey) {
-            if(pKey.which == 65) moveBlock(y,x,"x",1,-1,100);
-            if(pKey.which == 87) console.log('rotate');
-            if(pKey.which == 68) moveBlock(y,x,"x",1,1,100);
-            if(pKey.which == 83) console.log('drop');
-        }, false);
+    window.onkeydown = function(pKey) {
+        console.log(pKey);
+        if(pKey.which == 65) moveBlock(y,x,"x",1,-1,100);
+        if(pKey.which == 87) console.log('rotate');
+        if(pKey.which == 68) moveBlock(y,x,"x",1,1,100);
+        if(pKey.which == 83) console.log('drop');
+    };
 }
 
