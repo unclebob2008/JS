@@ -45,6 +45,9 @@ function startGame() {
          x[i] = Number(id[1]);
     }
     y.sort(function(a, b){return a-b});
+    for (var i = 0; i < 4; i++) {
+        $("#" + y[i] + "\\." + x[i]).attr("class", "blocknow");
+    }
     pressedKey();
     fallingBlock(y,x);
 }
@@ -52,15 +55,14 @@ function startGame() {
 function fallingBlock(y,x) {
     var timer = setInterval(drawBlock, 1000);
     function drawBlock() {
-        var minY = y[0];
         for (var i = 0; i < 4; i++) {
-            $("#" + y[i] + "\\." + x[i]).attr("class", "blocknow");
-            if (minY > 0) {
-                $("#" + (minY - 1) + "\\." + x[i]).attr("class", "block");
-            }
+            $("#" + y[i] + "\\." + x[i]).attr("class", "block");
             y[i]++;
         }
-        if (y[3] == 20) {
+        for (var i = 0; i < 4; i++) {
+            $("#" + y[i] + "\\." + x[i]).attr("class", "blocknow");
+        }
+        if (y[3] == 19) {
             clearInterval(timer);
         }
     }
