@@ -38,16 +38,16 @@ img {
     text-align: center;
 }
 
-#div03 .block {
+#div03 .blocknow {
   position: fixed;
-  background-color: skyblue;
+  background-color: blue;
   width: 4px;
   padding: 13px;
 }
 
-#div03 .blocknow {
+#div03 .block {
   position: fixed;
-  background-color: blue;
+  background-color: skyblue;
   width: 4px;
   padding: 13px;
 }
