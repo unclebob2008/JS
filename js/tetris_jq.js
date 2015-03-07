@@ -17,6 +17,9 @@ bars[12] = ["0.5","1.5","1.4","2.4"];
 bars[13] = ["0.4","0.5","1.5","1.6"];
 bars[14] = ["1.4","1.5","0.5","0.6"];
 
+var y = [];
+var x = [];
+
 function setGlass() {
     var top = 50;
     var glass  = $("<div>");
@@ -37,32 +40,31 @@ function setGlass() {
 
 function startGame() {
     var barCur = bars[Math.floor((Math.random() * 14))];
-    var y = [];
-    var x = [];
     for (var i = 0; i < 4; i++) {
          var id = barCur[i].split(".");
          y[i] = Number(id[0]);
          x[i] = Number(id[1]);
     }
-    y.sort(function(a, b){return a-b});
     for (var i = 0; i < 4; i++) {
         $("#" + y[i] + "\\." + x[i]).attr("class", "blocknow");
     }
     pressedKey();
-    fallingBlock(y,x);
+    moveBlock(y,x,"y",19,1,1000);
 }
 
-function fallingBlock(y,x) {
-    var timer = setInterval(drawBlock, 1000);
+function moveBlock(y,x,dir,gap,step,time) {
+    var coord = (dir == "y") ? y : x;
+    var delta = coord[0] + gap;
+    var timer = setInterval(drawBlock, time);
     function drawBlock() {
         for (var i = 0; i < 4; i++) {
             $("#" + y[i] + "\\." + x[i]).attr("class", "block");
-            y[i]++;
+            coord[i] = coord[i] + step;
         }
         for (var i = 0; i < 4; i++) {
             $("#" + y[i] + "\\." + x[i]).attr("class", "blocknow");
         }
-        if (y[3] == 19) {
+        if (coord[3] == delta) {
             clearInterval(timer);
         }
     }
@@ -70,9 +72,9 @@ function fallingBlock(y,x) {
 
 function pressedKey() {
         $(document).keydown(function(pKey) {
-        if(pKey.which == 37) console.log('left');
+        if(pKey.which == 37) moveBlock(y,x,"x",1,-1,100);
         if(pKey.which == 38) console.log('rotate');
-        if(pKey.which == 39) console.log('right');
+        if(pKey.which == 39) moveBlock(y,x,"x",1,1,100);
         if(pKey.which == 40) console.log('drop');
     });
 }
