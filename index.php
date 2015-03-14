@@ -23,6 +23,11 @@
           <a href="tetris.html">Тетрис</a>
         </td>
       </tr>
+      <tr>
+        <td>
+          <a href="/war/Test_gwt.html">Test GWT</a>
+        </td>
+      </tr>
     </table>
   </div>
 </body>

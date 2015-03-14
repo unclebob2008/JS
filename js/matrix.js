@@ -126,6 +126,7 @@ function showMines() {
                         document.getElementById(i + "." + j).childNodes[0].nodeValue =
                         'Bomb';
                         document.getElementById(i + "." + j).style.color = "white";
+                        document.getElementById(i + "." + j).style.fontSize = "10px";
               }
           }
     }
