@@ -10,9 +10,7 @@
         }
     };
     sgames.setMinesP1 = function() {
-        $("#bfImg").remove();
-        $("#head01").remove();
-        $("#div01").css("text-align", "left");
+        $("#div01").empty();
         var p1 = '<h1 id="head01">Сапёр</h1> \
         Ширина поля: <input id="wF" type="number" name="widthField" min="3" max="30" value=10> \
         <br> \

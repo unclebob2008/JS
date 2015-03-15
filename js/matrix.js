@@ -5,6 +5,7 @@ sgames.heightField;
 sgames.procMines;
 sgames.numMines;
 sgames.arrField = {};
+sgames.viewField = {};
 
 sgames.setTable = function () {
   sgames.widthField = $("#wF").val();
@@ -24,12 +25,13 @@ sgames.setTable = function () {
             td.id = i + "_" + j;
             td.onclick = function(){sgames.clickCell();};
             sgames.arrField[td.id] = 0;
+            sgames.viewField[td.id] = 0; //0 - original (green), 1 - clicked (white), 2 - marked (blue)
         }
     }
     if ($("#field").length) {
         $("#field").replaceWith(tbl);
     } else {
-        $("body").append(tbl);
+        $("#div01").append(tbl);
     }
     for (var m = 0; m < sgames.numMines; m++) {
         var y = Math.floor((Math.random() * sgames.heightField));
@@ -62,6 +64,7 @@ sgames.clickCell = function() {
     if (event.button == 0) {
         if (sgames.arrField[clickId] !== 9) {
             $("#" + clickId).css("background", "white");
+            sgames.viewField[clickId] = 1;
             if (sgames.arrField[clickId] !== 0) {
                 $("#" + clickId).text(sgames.arrField[clickId]);
             } else {
@@ -74,13 +77,14 @@ sgames.clickCell = function() {
             $("#baner").text("Вы проиграли. Попробуйте ещё раз.");    
         }
     } else {
-        var checkBG = $("#" + clickId).css("background");
-        switch (checkBG) {
-            case '':
+        switch (sgames.viewField[clickId]) {
+            case 0:
                 $("#" + clickId).css("background", "blue");
+                sgames.viewField[clickId] = 2;
                 break;
-            case 'blue':
+            case 2:
                 $("#" + clickId).removeAttr("style");
+                sgames.viewField[clickId] = 0;
                 break;
         }
         sgames.checkEndGame();
@@ -92,10 +96,8 @@ sgames.checkEndGame = function() {
     var mines = 0;
     for (var i = 0; i < sgames.heightField; i++) {
         for (var j = 0; j < sgames.widthField; j++) {
-            var checkBG = $("#" + i + "_" + j).css("background");
-            console.log(checkBG);
-            if (sgames.arrField[i + "_" + j] !== 9 && checkBG == '') count++;
-            if (sgames.arrField[i + "_" + j] == 9 && checkBG == 'blue') mines++;
+            if (sgames.arrField[i + "_" + j] !== 9 && sgames.viewField[i + "_" + j] == 0) count++;
+            if (sgames.arrField[i + "_" + j] == 9 && sgames.viewField[i + "_" + j] == 2) mines++;
         }
     }
     if (count == 0 || mines == sgames.numMines) {
@@ -109,10 +111,10 @@ sgames.openNear = function(clId) {
     var i = Number(id[0]);
     var j = Number(id[1]);
     var idCol = sgames.collectNear(i, j);
-    for (var k = 0; k < idCol.length; k++) {
-        var checkBG = $("#" + idCol[k]).css("background");
-        if (checkBG !== 'white') {
+     for (var k = 0; k < idCol.length; k++) {
+        if (sgames.viewField[idCol[k]] == 0) {
             $("#" + idCol[k]).css("background", "white");
+            sgames.viewField[idCol[k]] = 1;
             if (sgames.arrField[idCol[k]] !== 0) {
                 $("#" + idCol[k]).text(sgames.arrField[idCol[k]]);
             } else {
