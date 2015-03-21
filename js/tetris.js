@@ -56,7 +56,6 @@ _sgames.Tetris = function() {
     var getNewBlock = function() {
         var barCur = bars[Math.floor((Math.random() * 14))];
         colCur = blockColors[Math.floor((Math.random() * 5))];
-        console.log(colCur);
         for (var i = 0; i < 4; i++) {
             var id = barCur[i].split("_");
             yPos[i] = Number(id[0]);
@@ -85,49 +84,76 @@ _sgames.Tetris = function() {
     var fallingBlock = function() { 
         timer = setInterval(fallBlock, delay);
         function fallBlock() {
-            drawBlock(3);
+            for (var i = 0; i < 4; i++) {
+                $("#" + yPos[i] + "_" + xPos[i]).css("background-color", "");
+                table[yPos[i] + "_" + xPos[i]] = 0;
+            }
+            for (var i = 0; i < 4; i++) {
+                yPos[i]++;
+                $("#" + yPos[i] + "_" + xPos[i]).css("background-color", colCur);
+                table[yPos[i] + "_" + xPos[i]] = 1;
+            }      
             var yMax = Math.max.apply(Math, yPos);
-            if (yMax == 19) {
+            var canMove = true;
+            for (var i = 0; i < 4; i++) {
+                if (table[(yPos[i] + 1) + "_" + xPos[i]] == 2) {
+                    canMove = false;
+                }
+            }
+            if (yMax == 19 || !canMove) {
                 clearInterval(timer);
+                stopedBlock();
                 tetris.startGame();
             }
         }
     };
     
+    var stopedBlock = function() {
+        for (var i = 0; i < 4; i++) {
+            table[yPos[i] + "_" + xPos[i]] = 2;
+        }
+    };
+    
     var moveLeft = function() {
         var xMin = Math.min.apply(Math, xPos);
-        if ((xMin - 1) >= 0) {
-            drawBlock(2);
+        var canMove = true;
+        for (var i = 0; i < 4; i++) {
+            if (table[yPos[i] + "_" + (xPos[i] - 1)] == 2) {
+                canMove = false;
+            }
+        }
+        if ((xMin - 1) >= 0 && canMove) {
+            for (var i = 0; i < 4; i++) {
+                $("#" + yPos[i] + "_" + xPos[i]).css("background-color", "");
+                table[yPos[i] + "_" + xPos[i]] = 0;
+            }
+            for (var i = 0; i < 4; i++) {
+                xPos[i]--;
+                $("#" + yPos[i] + "_" + xPos[i]).css("background-color", colCur);
+                table[yPos[i] + "_" + xPos[i]] = 1;
+            }      
         }
     };
     
     var moveRight = function() {
         var xMax = Math.max.apply(Math, xPos);
-        if ((xMax + 1) < 10) {
-            drawBlock(1);
-        }
-    };
-    
-    var drawBlock = function(dir) {
+        var canMove = true;
         for (var i = 0; i < 4; i++) {
-             $("#" + yPos[i] + "_" + xPos[i]).css("background-color", "");
-             table[yPos[i] + "_" + xPos[i]] = 0;
-        }
-        for (var i = 0; i < 4; i++) {
-            switch (dir) {
-                case 1:
-                    xPos[i]++;
-                    break;
-                case 2:
-                    xPos[i]--;
-                    break;
-                case 3:
-                    yPos[i]++;
-                    break;
+            if (table[yPos[i] + "_" + (xPos[i] + 1)] == 2) {
+                canMove = false;
             }
-            $("#" + yPos[i] + "_" + xPos[i]).css("background-color", colCur);
-            table[yPos[i] + "_" + xPos[i]] = 1;
-         }
+        }
+        if ((xMax + 1) < 10 && canMove) {
+            for (var i = 0; i < 4; i++) {
+                $("#" + yPos[i] + "_" + xPos[i]).css("background-color", "");
+                table[yPos[i] + "_" + xPos[i]] = 0;
+            }
+            for (var i = 0; i < 4; i++) {
+                xPos[i]++;
+                $("#" + yPos[i] + "_" + xPos[i]).css("background-color", colCur);
+                table[yPos[i] + "_" + xPos[i]] = 1;
+            }      
+        }
     };
     
     var pressedKey = function() {
