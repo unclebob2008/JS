@@ -210,8 +210,10 @@ _sgames.Tetris = function() {
             var yMax = Math.max.apply(Math, yPos);
             if (yMax == 19 || !canMoveBlock(yPos, xPos, 1, 0)) {
                 clearInterval(timer);
-                stopedBlock();
-                tetris.startGame();
+                setTimeout(function(){
+                    stopedBlock();
+                    tetris.startGame();
+                }, delay);
             }
         }
     };
