@@ -37,26 +37,28 @@ _sgames.Tetris = function() {
     var yPos = []; // Координаты Y текущей фигуры.
     var xPos = []; // Координаты X текущей фигуры.
     var table = []; // Матем. отображение стакана и остановившихся фигур.
-    var delay = 1000; // Время задержки движения фигуры.
+    var delay; // Время задержки движения фигуры.
     var timer; // Таймер задержки.
     var colInd = 0; // Индекс цвета текущей фигуры.
     var barInd = 0; // Индекс текущей фигуры.
     var xDelta = 0; // Сдвиг фигуры влево-вправо от первоначального появления.
+    var level = 0;
+    var score = 0;
     
     this.pauseGame = function() {
-        $("#butPause").attr("onclick", "tetris.resumeGame();").text("Resume game");
+        $("#butPause").attr("onclick", "tetris.resumeGame();").text("Продолжить");
         clearInterval(timer);
     };
     
     this.resumeGame = function() {
-        $("#butPause").attr("onclick", "tetris.pauseGame();").text("Pause game");
+        $("#butPause").attr("onclick", "tetris.pauseGame();").text("Пауза");
         fallingBlock();
     };
     
     this.setGlass = function() {
         $("#div01").empty();
-        var butStart = '<button id="butStart" onclick="tetris.startGame();">Start game</button>';
-        var butPause = '<button id="butPause" onclick="tetris.pauseGame();">Pause game</button>';
+        var butStart = '<button id="butStart" onclick="tetris.startGame();">Старт</button>';
+        var butPause = '<button id="butPause" onclick="tetris.pauseGame();">Пауза</button>';
         var top = 50;
         var glass  = document.createElement('div');
         glass.id = "div03";
@@ -67,7 +69,7 @@ _sgames.Tetris = function() {
                 var block = document.createElement('div');
                 block.style.top = top + "px";
                 block.style.left = left +"px";
-                block.style.background = "peachpuff";
+                block.style.background = blockColors[0];
                 block.className = "block";
                 block.id = i + "_" + j;
                 table[i][j] = 0;
@@ -95,9 +97,10 @@ _sgames.Tetris = function() {
         }
         if (canMoveBlock(yPos, xPos, 0, 0)) {
             drawBlock(0, 0);
+            delay = 1000 - (100 * level);  // расчёт скорости фигуры в зависимости от уровня.
             fallingBlock();
         } else {
-            $("#div03").prepend("Game over");
+            $("#div03").prepend("Игра окончена");
         }
     };
     
@@ -218,30 +221,62 @@ _sgames.Tetris = function() {
         return true;
     };
     
+    var scoreCount = function(fL) {
+        var addScr = 0;
+        switch(fL) {
+            case 1:
+                addScr = 10;
+            case 2:
+                addScr = 30;
+            case 3:
+                addScr = 60;
+            case 4:
+                addScr = 100;
+        }
+        score += addScr;
+        if (score >= 100 && score < 200) level = 1;
+        if (score >= 200 && score < 300) level = 2;
+        if (score >= 300 && score < 400) level = 3;
+        if (score >= 400 && score < 500) level = 4;
+        if (score >= 500 && score < 600) level = 5;
+    };
+    
     var stopedBlock = function() {
+        var fL = 0;
         for (var i = 0; i < 4; i++) {
             table[yPos[i]][xPos[i]] = colInd;
         }
         xDelta = 0;
-        if (checkNeedClean()) clearLayer();
+        fL = checkNeedClean();
+        if (fL > 0) {
+            clearLayer(fL);
+            scoreCount(fL);
+        }
     };
     
     var checkNeedClean = function() {
-        for (var x = 0; x < 10; x++) {
-            if (table[19][x] == 0) return false;
+        var fL = 0;
+        for (var y = 19; y > 15; y--) {
+            for (var x = 0; x < 10; x++) {
+                if (table[y][x] == 0) {
+                    return fL;
+                }
+            }
+            fL++;
         }
-        return true;
+        return fL;
     };
     
-    var clearLayer = function() {
-        table.pop();
-        table.unshift([0,0,0,0,0,0,0,0,0,0]);
+    var clearLayer = function(fL) {
+        for (var y = 19; y > (19 - fL); y--) {
+            table.pop();
+            table.unshift([0,0,0,0,0,0,0,0,0,0]);
+        }
         for (var y = 0; y < 20; y++) {
             for (var x = 0; x < 10; x++) {
                 $("#" + y + "_" + x).css("background-color", blockColors[table[y][x]]);
             }
         }
-        if (checkNeedClean()) clearLayer();
     };
     
     var moveLeft = function() {
@@ -262,12 +297,18 @@ _sgames.Tetris = function() {
         }
     };
     
+    var dropBlock = function() {
+        clearInterval(timer);
+        delay = 10;
+        fallingBlock();
+    };
+    
     var pressedKey = function() {
         window.onkeydown = function(pKey) {
-            if(pKey.which == 65) moveLeft();
-            if(pKey.which == 87) rotateBlock();
-            if(pKey.which == 68) moveRight();
-            if(pKey.which == 83) console.log('drop');
+            if(pKey.which == 65 || pKey.which == 37) moveLeft();
+            if(pKey.which == 87 || pKey.which == 38) rotateBlock();
+            if(pKey.which == 68 || pKey.which == 39) moveRight();
+            if(pKey.which == 83 || pKey.which == 40) dropBlock();
         };
     }
 };

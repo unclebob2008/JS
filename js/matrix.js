@@ -146,7 +146,7 @@ _sgames.Matrix = function() {
         for (var i = 0; i < heightField; i++) {
             for (var j = 0; j < widthField; j++) {
                 if (arrField[i + "_" + j] == 9) {
-                    $("#" + i + "_" + j).text('Bomb');
+                    $("#" + i + "_" + j).html("<img src='/images/smile2-2.jpg'>");
                     $("#" + i + "_" + j).css("color", "white");
                     $("#" + i + "_" + j).css("font-size", "10px");
                 }
