@@ -21,6 +21,8 @@ _sgames.Matrix = function() {
         <input type="button" name="startBut" onclick="matrix.setTable();" value="Начать новую игру"> \
         <br/> \
         <br/> \
+        <h2 id="secundomer"></h2> \
+        <br/> \
         <h2 id="baner"></h2>'
         $("#div01").append(p1)
     }
