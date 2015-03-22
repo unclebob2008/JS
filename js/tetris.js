@@ -3,7 +3,7 @@
 _sgames.Tetris = function() {
     
     var bars = [];
-    bars[0] = ["0_4","0_5","1_4","1_5"]; //куб
+    bars[0] = ["0_4","0_5","1_4","1_5"]; //куб. В какую фигуру переходит при повороте по час. стрелке.
     bars[1] = ["0_3","0_4","0_5","0_6"]; //---> 2
     bars[2] = ["0_5","1_5","2_5","3_5"]; //---> 1
     bars[3] = ["0_4","0_5","1_4","2_4"]; //---> 7
@@ -18,17 +18,30 @@ _sgames.Tetris = function() {
     bars[12] = ["0_5","1_5","1_4","2_4"]; //---> 13
     bars[13] = ["0_4","0_5","1_5","1_6"]; //---> 12
     bars[14] = ["1_4","1_5","0_5","0_6"]; //---> 11
+    bars[15] = ["1_4","1_5","0_5","1_6"]; //---> 16
+    bars[16] = ["2_5","1_5","0_5","1_6"]; //---> 17
+    bars[17] = ["0_4","1_5","0_5","0_6"]; //---> 18
+    bars[18] = ["1_4","1_5","0_5","2_5"]; //---> 15
     
-    var blockColors = ["red", "orange", "yellow", "green", "blue", "violet", "pink"];
+    var blockColors = [
+        "peachpuff", //0 Номера цветов. Первый цвет - фон стакана.
+        "red",  //1  
+        "orange", //2
+        "yellow", //3
+        "green", //4
+        "blue", //5
+        "violet", //6
+        "pink" //7
+    ];
     
-    var yPos = [];
-    var xPos = [];
-    var table = {};
-    var delay = 1000;
-    var timer;
-    var colCur = "";
-    var barInd = 0;
-    var xDelta = 0;
+    var yPos = []; // Координаты Y текущей фигуры.
+    var xPos = []; // Координаты X текущей фигуры.
+    var table = []; // Матем. отображение стакана и остановившихся фигур.
+    var delay = 1000; // Время задержки движения фигуры.
+    var timer; // Таймер задержки.
+    var colInd = 0; // Индекс цвета текущей фигуры.
+    var barInd = 0; // Индекс текущей фигуры.
+    var xDelta = 0; // Сдвиг фигуры влево-вправо от первоначального появления.
     
     this.pauseGame = function() {
         $("#butPause").attr("onclick", "tetris.resumeGame();").text("Resume game");
@@ -48,14 +61,16 @@ _sgames.Tetris = function() {
         var glass  = document.createElement('div');
         glass.id = "div03";
         for (var i = 0; i < 20; i++) {
+            table[i] = [];
             var left = 100;
             for (var j = 0; j < 10; j++) {
                 var block = document.createElement('div');
                 block.style.top = top + "px";
                 block.style.left = left +"px";
+                block.style.background = "peachpuff";
                 block.className = "block";
                 block.id = i + "_" + j;
-                table[block.id] = 0;
+                table[i][j] = 0;
                 glass.appendChild(block);
                 left += 30
             }
@@ -71,8 +86,8 @@ _sgames.Tetris = function() {
     
     this.startGame = function() {
         $("#butStart").attr("onclick", "tetris.setGlass();");
-        barInd = Math.floor(Math.random() * 14);
-        colCur = blockColors[Math.floor(Math.random() * 6)];
+        barInd = Math.floor(Math.random() * 18);
+        colInd = Math.floor(Math.random() * 6) + 1;
         for (var i = 0; i < 4; i++) {
             var id = bars[barInd][i].split("_");
             yPos[i] = Number(id[0]);
@@ -151,6 +166,18 @@ _sgames.Tetris = function() {
             case 14:
                 getRotatedBlock(11);
                 break;
+            case 15:
+                getRotatedBlock(16);
+                break;
+            case 16:
+                getRotatedBlock(17);
+                break;
+            case 17:
+                getRotatedBlock(18);
+                break;
+            case 18:
+                getRotatedBlock(15);
+                break;
         }
     };
     
@@ -158,13 +185,13 @@ _sgames.Tetris = function() {
         for (var i = 0; i < 4; i++) {
             yPos[i] = yPos[i] + yD;
             xPos[i] = xPos[i] + xD;
-            $("#" + yPos[i] + "_" + xPos[i]).css("background-color", colCur);
+            $("#" + yPos[i] + "_" + xPos[i]).css("background-color", blockColors[colInd]);
         }
     };
 
     var eraseBlock = function() {
         for (var i = 0; i < 4; i++) {
-            $("#" + yPos[i] + "_" + xPos[i]).css("background-color", "");
+            $("#" + yPos[i] + "_" + xPos[i]).css("background-color", blockColors[0]);
         }
     };
     
@@ -184,7 +211,7 @@ _sgames.Tetris = function() {
     
     var canMoveBlock = function(yP, xP, yD, xD) {
         for (var i = 0; i < 4; i++) {
-            if (table[(yP[i] + yD) + "_" + (xP[i] + xD)] == 1) {
+            if (table[yP[i] + yD][xP[i] + xD] > 0) {
                  return false;
              }
         }
@@ -193,9 +220,28 @@ _sgames.Tetris = function() {
     
     var stopedBlock = function() {
         for (var i = 0; i < 4; i++) {
-            table[yPos[i] + "_" + xPos[i]] = 1;
+            table[yPos[i]][xPos[i]] = colInd;
         }
         xDelta = 0;
+        if (checkNeedClean()) clearLayer();
+    };
+    
+    var checkNeedClean = function() {
+        for (var x = 0; x < 10; x++) {
+            if (table[19][x] == 0) return false;
+        }
+        return true;
+    };
+    
+    var clearLayer = function() {
+        table.pop();
+        table.unshift([0,0,0,0,0,0,0,0,0,0]);
+        for (var y = 0; y < 20; y++) {
+            for (var x = 0; x < 10; x++) {
+                $("#" + y + "_" + x).css("background-color", blockColors[table[y][x]]);
+            }
+        }
+        if (checkNeedClean()) clearLayer();
     };
     
     var moveLeft = function() {
