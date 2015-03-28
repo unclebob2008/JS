@@ -63,7 +63,7 @@ _sgames.Tetris = function() {
         var butPause = '<button id="butPause" onclick="tetris.pauseGame();">Пауза</button>';
         var scoreView = '<button id="score" disabled>Счёт: 0</button>';
         var levelView = '<button id="level" disabled>Уровень: 1</button>';
-        var top = 50;
+        var top = 40;
         var glass  = document.createElement('div');
         glass.id = "div03";
         for (var i = 0; i < 20; i++) {
@@ -82,6 +82,7 @@ _sgames.Tetris = function() {
             }
             top += 26
         }
+        $("#div01").css("text-align", "");
         $("#div01").append(butStart, butPause, scoreView, levelView, glass);
         pressedKey();
         if (timer !== undefined) {

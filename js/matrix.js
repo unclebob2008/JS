@@ -11,7 +11,7 @@ _sgames.Matrix = function() {
     
     this.setMinesP1 = function() {
         $("#div01").empty();
-        var p1 = '<h1 id="head01">Сапёр</h1> \
+        var p1 = '<h2 id="head01">Сапёр</h2> \
         Ширина поля: <input id="wF" type="number" name="widthField" min="3" max="30" value=10> \
         <br> \
         Высота поля: <input id="hF" type="number" name="heightField" min="3" max="30" value=10> \
@@ -19,11 +19,9 @@ _sgames.Matrix = function() {
         Количество мин: <input id="pM" type="number" name="procMines" min="10" max="50" value=25>% от размера поля \
         <br> \
         <input type="button" name="startBut" onclick="matrix.setTable();" value="Начать новую игру"> \
+        <h3 id="secundomer"></h3> \
         <br/> \
-        <br/> \
-        <h2 id="secundomer"></h2> \
-        <br/> \
-        <h2 id="baner"></h2>'
+        <h3 id="baner"></h3>'
         $("#div01").append(p1)
     }
     

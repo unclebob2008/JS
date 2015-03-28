@@ -1,3 +1,8 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+
 #head01 {
   color: blue;
 }
@@ -7,7 +12,7 @@
   font-size: 100%;
 }
 
-td {
+#div01 td {
   width: 25px;
   height: 25px;
   color: black;
@@ -18,11 +23,12 @@ td {
   cursor: pointer;
 }
 
-#div01 {
+.main {
     position: absolute;
-    left: 10%;
-    top: 0%;
-    width: 80%;
+    left: 0%;
+    top: 8%;
+    width: 98.5%;
+    height: 89%;
     text-align: center;
     background-color: lightgrey;
     border: 10px solid navy;
@@ -31,14 +37,32 @@ td {
 #div02 {
     top: 0%;
     left: 0%;
+    width: 98.5%;
     position: absolute;
     background-color: lightgreen;
-    height: 100%;
+    height: 6%;
+    border: 10px solid navy;
+    border-collapse: collapse;
     text-align: center;
 }
 
+.menuDiv {
+    width: 100%;
+    background-color: buttonface;
+    text-align: center;
+    border: 2px solid black;
+    border-collapse: collapse;
+    cursor: pointer;
+}
+
+.menuTable {
+    border-spacing: 10px;
+    
+}
+
+
 #div03 .block {
-  position: fixed;
+  position: absolute;
   width: 4px;
   padding: 13px;
 }
@@ -50,8 +74,10 @@ td {
 }
 
 #field {
-  border: 2px solid red;
+  border: 2px groove red;
   border-collapse: collapse;
+  position: absolute;
+  right: 40%;
 }
 
 

@@ -11,23 +11,21 @@
   <script src="js/tetris.js"></script>
 </head>
 <body>
-   <div id="div01">
-    <h1 id="head01"> Привет. Кликни по мне мышкой.</h1>
-    <img id="bfImg" src="images/smile3.jpg" alt="iBF" onclick="magic.clickImg();"/>
-  </div>
   <div id="div02">
-    <table id="menu1">
+    <table class="menuTable">
       <tr>
         <td>
-          <button onclick="matrix.setMinesP1();">Сапёр</button>
+          <div class="menuDiv" onclick="matrix.setMinesP1();">Сапёр</div>
         </td>
-      </tr>
-      <tr>
         <td>
-          <button onclick="tetris.setGlass();">Тетрис</button>
+          <div class="menuDiv" onclick="tetris.setGlass();">Тетрис</div>
         </td>
       </tr>
     </table>
+  </div>
+   <div id="div01" class="main">
+    <h1 id="head01"> Привет. Кликни по мне мышкой.</h1>
+    <img id="bfImg" src="images/smile3.jpg" alt="iBF" onclick="magic.clickImg();"/>
   </div>
 </body>
 </html>
