@@ -9,22 +9,6 @@ _sgames.Matrix = function() {
     var arrField = {};
     var viewField = {};
     
-    this.setMinesP1 = function() {
-        $("#div01").empty();
-        var p1 = '<h2 id="head01">Сапёр</h2> \
-        Ширина поля: <input id="wF" type="number" name="widthField" min="3" max="30" value=10> \
-        <br> \
-        Высота поля: <input id="hF" type="number" name="heightField" min="3" max="30" value=10> \
-        <br> \
-        Количество мин: <input id="pM" type="number" name="procMines" min="10" max="50" value=25>% от размера поля \
-        <br> \
-        <input type="button" name="startBut" onclick="matrix.setTable();" value="Начать новую игру"> \
-        <h3 id="secundomer"></h3> \
-        <br/> \
-        <h3 id="baner"></h3>'
-        $("#div01").append(p1)
-    }
-    
     this.setTable = function () {
         widthField = $("#wF").val();
         heightField = $("#hF").val();
@@ -49,7 +33,7 @@ _sgames.Matrix = function() {
         if ($("#field").length) {
             $("#field").replaceWith(tbl);
         } else {
-            $("#div01").append(tbl);
+            $("#mainDiv").append(tbl);
         }
         for (var m = 0; m < numMines; m++) {
             var y = Math.floor((Math.random() * heightField));
