@@ -58,7 +58,7 @@ _sgames.Tetris = function() {
     };
     
     this.setGlass = function() {
-        $("#div3").empty();
+        $("#div03").remove();
         var top = 40;
         var glass  = document.createElement('div');
         glass.id = "div03";
