@@ -58,32 +58,36 @@ _sgames.Tetris = function() {
     };
     
     this.setGlass = function() {
-        $("#div03").remove();
-        var top = 40;
-        var glass  = document.createElement('div');
-        glass.id = "div03";
-        for (var i = 0; i < 20; i++) {
-            table[i] = [];
-            var left = 100;
-            for (var j = 0; j < 10; j++) {
-                var block = document.createElement('div');
-                block.style.top = top + "px";
-                block.style.left = left +"px";
-                block.style.background = blockColors[0];
-                block.className = "block";
-                block.id = i + "_" + j;
-                table[i][j] = 0;
-                glass.appendChild(block);
-                left += 30
+        if ($("#butPause").text() != "Продолжить") {
+            $("#div03").remove();
+            var top = 40;
+            var glass  = document.createElement('div');
+            glass.id = "div03";
+            for (var i = 0; i < 20; i++) {
+                table[i] = [];
+                var left = 100;
+                for (var j = 0; j < 10; j++) {
+                    var block = document.createElement('div');
+                    block.style.top = top + "px";
+                    block.style.left = left +"px";
+                    block.style.background = blockColors[0];
+                    block.className = "block";
+                    block.id = i + "_" + j;
+                    table[i][j] = 0;
+                    glass.appendChild(block);
+                    left += 30
+                }
+                top += 26
             }
-            top += 26
-        }
-        $("#mainDiv").css("text-align", "");
-        $("#mainDiv").append(glass);
-        pressedKey();
-        if (timer !== undefined) {
-            clearInterval(timer);
-            tetris.startGame();
+            $("#mainDiv").css("text-align", "");
+            $("#mainDiv").append(glass);
+            $("#score").text("Счёт: 0");
+            $("#level").text("Уровень: 1");
+            pressedKey();
+            if (timer !== undefined) {
+                clearInterval(timer);
+                tetris.startGame();
+            }
         }
     };
     
