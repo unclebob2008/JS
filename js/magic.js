@@ -1,3 +1,5 @@
+/* global _sgames */
+
 "use strict";
 
 _sgames.Magic = function() {
@@ -12,6 +14,6 @@ _sgames.Magic = function() {
     };
 };
 
-var magic = new _sgames.Magic();
+_sgames.magic = new _sgames.Magic();
 
 

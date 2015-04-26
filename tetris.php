@@ -7,12 +7,12 @@ require_once('menu.php');
      <table class="menuTable">
       <tr>
         <td>
-          <button id="butStart" class="menuBut" onclick="tetris.startGame();">Старт</button>
+          <button id="butStart" class="menuBut" onclick="_sgames.tetris.startGame();">Старт</button>
         </td>
       </tr>
       <tr>
         <td>
-          <button id="butPause" class="menuBut" onclick="tetris.pauseGame();">Пауза</button>
+          <button id="butPause" class="menuBut" onclick="_sgames.tetris.pauseGame();">Пауза</button>
         </td>
       </tr>
       <tr>
@@ -27,8 +27,11 @@ require_once('menu.php');
       </tr>
     </table>
 </div>
+<script src="js/jquery-2.1.3.js"></script>
+<script src="js/_namespace.js"></script>
+<script src="js/tetris.js"></script>
 <script type="text/javascript">
-   tetris.setGlass();
+   _sgames.tetris.setGlass();
 </script>
 
 <?php

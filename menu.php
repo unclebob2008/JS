@@ -10,6 +10,9 @@
         <td>
           <div class="menuBut"><a href="tetris.php">Тетрис</div>
         </td>
+        <td>
+          <div class="menuBut"><a href="tetris2.php">Тетрис Новый</div>
+        </td>
       </tr>
     </table>
 </div>

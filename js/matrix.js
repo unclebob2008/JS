@@ -1,3 +1,5 @@
+/* global _sgames */
+
 "use strict";
 
 _sgames.Matrix = function() {
@@ -23,7 +25,7 @@ _sgames.Matrix = function() {
             timer = setInterval(
                 function () {
                     secs++;
-                    if (secs == 60) {
+                    if (secs === 60) {
                         secs = 0;
                         mins++;
                     }
@@ -36,7 +38,7 @@ _sgames.Matrix = function() {
                 1000
             );
         }
-    }
+    };
     
     this.setTable = function() {
         if (timer) clearInterval(timer);
@@ -77,10 +79,10 @@ _sgames.Matrix = function() {
             }
             for(var i = 0; i < heightField; i++) {
                 for(var j = 0; j < widthField; j++) {
-                    if (arrField[i + "_" + j] == 9) {
+                    if (arrField[i + "_" + j] === 9) {
                         var nb = collectNear(i, j);
                         for (var k = 0; k < nb.length; k++) {
-                            if (arrField[nb[k]] != 9) {
+                            if (arrField[nb[k]] !== 9) {
                                 arrField[nb[k]]++;
                             }
                         }
@@ -95,7 +97,7 @@ _sgames.Matrix = function() {
     this.clickCell = function() {
         secundomer();
         var clickId = event.target.id;
-        if (event.button == 0) {
+        if (event.button === 0) {
             if (arrField[clickId] !== 9) {
                 $("#" + clickId).css("background", "white");
                 viewField[clickId] = 1;
@@ -206,4 +208,4 @@ _sgames.Matrix = function() {
     }
 };
 
-var matrix = new _sgames.Matrix();
+_sgames.matrix = new _sgames.Matrix();

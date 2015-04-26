@@ -1,3 +1,5 @@
+/* global _sgames */
+
 "use strict";
 
 _sgames.Tetris = function() {
@@ -47,13 +49,13 @@ _sgames.Tetris = function() {
     
     this.pauseGame = function() {
         if (timer !== undefined) {
-            $("#butPause").attr("onclick", "tetris.resumeGame();").text("Продолжить");
+            $("#butPause").attr("onclick", "_sgames.tetris.resumeGame();").text("Продолжить");
             clearInterval(timer);
         }
     };
     
     this.resumeGame = function() {
-        $("#butPause").attr("onclick", "tetris.pauseGame();").text("Пауза");
+        $("#butPause").attr("onclick", "_sgames.tetris.pauseGame();").text("Пауза");
         fallingBlock();
     };
     
@@ -86,13 +88,13 @@ _sgames.Tetris = function() {
             pressedKey();
             if (timer !== undefined) {
                 clearInterval(timer);
-                tetris.startGame();
+                _sgames.tetris.startGame();
             }
         }
     };
     
     this.startGame = function() {
-        $("#butStart").attr("onclick", "tetris.setGlass();");
+        $("#butStart").attr("onclick", "_sgames.tetris.setGlass();");
         barInd = Math.floor(Math.random() * 18);
         colInd = Math.floor(Math.random() * 6) + 1;
         for (var i = 0; i < 4; i++) {
@@ -213,7 +215,7 @@ _sgames.Tetris = function() {
                 clearInterval(timer);
                 setTimeout(function(){
                     stopedBlock();
-                    tetris.startGame();
+                    _sgames.tetris.startGame();
                 }, delay);
             }
         }
@@ -325,7 +327,7 @@ _sgames.Tetris = function() {
                 if(pKey.which == 83 || pKey.which == 40) dropBlock();
             }
         };
-    }
+    };
 };
 
-var tetris = new _sgames.Tetris();
+_sgames.tetris = new _sgames.Tetris();
