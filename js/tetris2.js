@@ -47,11 +47,13 @@ _sgames.Tetris2 = function() {
         }
     }
     
-    function isCollide() {
+    function isCollide(xPlus, xMinus) {
         for (var j = 0; j < stopedBar.length; j++) {
             for (var i = 0; i < numb; i++) {
-                if (game.math.distance(bar[i].x, bar[i].y, 
-                    stopedBar[j].x, stopedBar[j].y) <= step) return true;
+                if (bar[i].x - step * xMinus < stopedBar[j].x + step &&
+                    bar[i].x + step + step * xPlus > stopedBar[j].x &&
+                    bar[i].y <= stopedBar[j].y + step &&
+                    bar[i].y + step >= stopedBar[j].y) return true;
             }
         }
         return false;
@@ -61,15 +63,15 @@ _sgames.Tetris2 = function() {
         var minMax = getMinMax();
         if (y) {
             if (minMax.yMax >= game.height) return false;
-            if (isCollide()) return false;
+            if (isCollide(0, 0)) return false;
         }
         if (x && dir) {
             if (minMax.xMax >= game.width) return false;
-            if (isCollide()) return false;
+            if (isCollide(1, 0)) return false;
         }
         if (x && !dir) {
             if (minMax.xMin <= 0) return false;
-            if (isCollide()) return false;
+            if (isCollide(0, 1)) return false;
         }
         return true;
     }
