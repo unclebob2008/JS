@@ -2,150 +2,202 @@
 
 "use strict";
 
+_sgames.TetrisShapes = function() {
+    
+    var bars = [
+        [
+            [0,0,1],
+            [1,1,1],
+            [0,0,0]
+        ],
+        [
+            [1,0,0],
+            [1,1,1],
+            [0,0,0]
+        ],
+        [
+            [0,1,1],
+            [1,1,0],
+            [0,0,0]
+        ],
+        [
+            [1,1,0],
+            [0,1,1],
+            [0,0,0]
+        ],
+        [
+            [0,1,0],
+            [1,1,1],
+            [0,0,0]
+        ],
+        [
+            [1,1],
+            [1,1]
+        ],
+        [
+            [0,0,0,0],
+            [1,1,1,1],
+            [0,0,0,0],
+            [0,0,0,0]
+        ]
+
+    ];
+    
+    var colors = [
+        0xFF0000, // red
+        0xFF3300, // orange
+        0xFFCC00, // yellow
+        0x009900, // green
+        0x00CCFF ,// cyan
+        0x3399FF ,// blue
+        0xCC00FF //violet
+    ];
+
+    this.getRand = function () {
+        var rand = Math.floor(Math.random() * bars.length);
+        return {
+            shape: bars[rand],
+            topLeft: {x: 3, y: 0},
+            color: colors[rand]
+            };
+    };
+    
+};
+
+_sgames.TetrisGlass = function(width, height) {
+    
+    var glass = [];
+    for (var row = 0; row < height; row++) {
+        glass[row] = [];
+        for (var col = 0; col < width; col++) {
+            glass[row][col] = 0;
+        }
+    }
+    return glass;
+};
+
+
 _sgames.Tetris2 = function() {
     var game = new Phaser.Game(250, 500, Phaser.AUTO, 'tetris2', 
         { create: create, update: update });
-    var bars = [];
-    bars[0] = [100, 0, 100, 25, 100, 50, 125, 25];
-    var bar = [];
-    var stopedBar = [];
+    var bar;
     var graphics;
     var timer;
     var loopTimer;
-    var upKey;
-    var downKey;
-    var leftKey;
-    var rightKey;
     var cursors;
+    var color;
     var delay = 1000;
     var step = 25;
-    var numb = 4;
+    var bars = new _sgames.TetrisShapes();
+    var glass = new _sgames.TetrisGlass(10, 20);
 
     function create () {
         graphics = game.add.graphics(0, 0);
         game.stage.backgroundColor = '#99FFCC';
         cursors = game.input.keyboard.createCursorKeys();
-//        upKey = game.input.keyboard.addKey(Phaser.Keyboard.UP);
-//        downKey = game.input.keyboard.addKey(Phaser.Keyboard.DOWN);
-//        leftKey = game.input.keyboard.addKey(Phaser.Keyboard.LEFT);
-//        rightKey = game.input.keyboard.addKey(Phaser.Keyboard.RIGHT);
         timer = game.time.create(false);
         loopTimer = game.time.events.loop(delay, fallBar, this);
-//        timer.loop(delay, fallBar, this);
         createBar();
         timer.start();
     }
 
     function createBar() {
         loopTimer.delay = 1000;
-        for (var i = 0; i < numb; i++) {
-            bar[i] = new Phaser.Rectangle(bars[0][(i * 2)], 
-                 bars[0][((i * 2) + 1)], step, step);
-            graphics.beginFill(0xFF33ff);
-            graphics.drawRect(bar[i].x, bar[i].y, step, step);
-            graphics.endFill();
-        }
+        bar = bars.getRand();
+        color = bar.color;
+        drawBar(color);
     }
     
-    function isCollide(xPlus, xMinus) {
-        for (var j = 0; j < stopedBar.length; j++) {
-            for (var i = 0; i < numb; i++) {
-                if (bar[i].x - step * xMinus < stopedBar[j].x + step &&
-                    bar[i].x + step + step * xPlus > stopedBar[j].x &&
-                    bar[i].y <= stopedBar[j].y + step &&
-                    bar[i].y + step >= stopedBar[j].y) return true;
+    function canMove(pX, mX, pY, test) {
+        for (var y = 0; y < test.shape.length; y++) {
+            for (var x = 0; x < test.shape[y].length; x++) {
+                if (test.shape[y][x] !== 0) {
+                    if (pY) {
+                        if (test.topLeft.y + y >= glass.length - 1 ||
+                            glass[bar.topLeft.y + y + 1][test.topLeft.x + x] === 1) return false;
+                    }
+                    if (pX) {
+                        if (test.topLeft.x + x >= glass[y].length - 1 ||
+                            glass[test.topLeft.y + y][test.topLeft.x + x + 1] === 1) return false;
+                    }
+                    if (mX) {
+                        if (test.topLeft.x + x <= 0 ||
+                            glass[test.topLeft.y + y][test.topLeft.x + x - 1] === 1) return false;
+                    }
+                }
             }
-        }
-        return false;
-    }
-        
-    function canMove(x, y, dir) {
-        var minMax = getMinMax();
-        if (y) {
-            if (minMax.yMax >= game.height) return false;
-            if (isCollide(0, 0)) return false;
-        }
-        if (x && dir) {
-            if (minMax.xMax >= game.width) return false;
-            if (isCollide(1, 0)) return false;
-        }
-        if (x && !dir) {
-            if (minMax.xMin <= 0) return false;
-            if (isCollide(0, 1)) return false;
         }
         return true;
     }
 
-    function getMinMax() {
-        var x = [];
-        var y = [];
-        for (var i=0; i < numb; i++) {
-            x[i] = bar[i].x;
-            y[i] = bar[i].y;
-        }
-        var xMax = Math.max.apply(Math, x);
-        var xMin = Math.min.apply(Math, x);
-        var yMax = Math.max.apply(Math, y);
-        return {
-            xMax: xMax + step,
-            xMin: xMin,
-            yMax: yMax + step
-        };
-    }
-
-    function eraseBar() {
-        for (var i=0; i < numb; i++) {
-            graphics.beginFill(0x99FFCC);
-            graphics.drawRect(bar[i].x, bar[i].y, step, step);
-            graphics.endFill();
-        }
-    }
-
-    function drawBar() {
-        for (var i=0; i < numb; i++) {
-            graphics.beginFill(0xFF33ff);
-            graphics.drawRect(bar[i].x, bar[i].y, step, step);
-            graphics.endFill();
+    function drawBar(color) {
+        for (var y = 0; y < bar.shape.length; y++) {
+            for (var x = 0; x < bar.shape[y].length; x++) {
+                if (bar.shape[y][x] !== 0) {
+                    graphics.beginFill(color);
+                    graphics.drawRect((bar.topLeft.x + x)*step, 
+                        (bar.topLeft.y + y)*step, step, step);
+                    graphics.endFill();
+                }
+            }
         }
     }
     
-    function moveBar(x, y, dir) {
-        eraseBar();
-        var stepX = x ? step : 0;
-        var stepY = y ? step : 0;
-        stepX = dir ? stepX : -stepX;
-        for (var i=0; i < numb; i++) {
-            bar[i].x += stepX;
-            bar[i].y += stepY;
-        }
-        drawBar();
+    function moveBar(dx, dy) {
+        drawBar(0x99FFCC);
+        bar.topLeft.x += dx;
+        bar.topLeft.y += dy;
+        drawBar(color);
     }
 
     function fallBar() {
-            if (canMove(false, true)) {
-                moveBar(false, true, true);
-            } else {
-                for (var i=0; i < numb; i++) {
-                    stopedBar.push(bar[i]);
+        if (canMove(0, 0, 1, bar)) {
+            moveBar(0, 1);
+        } else {
+            for (var y = 0; y < bar.shape.length; y++) {
+                for (var x = 0; x < bar.shape[y].length; x++) {
+                    if (bar.shape[y][x] !== 0) {
+                        glass[bar.topLeft.y + y][bar.topLeft.x + x] = 1;
+                    }
                 }
-                createBar();
             }
+            createBar();
+        }
+    }
+    
+    function rotateBar() {
+        var tmp = [];
+        for (var y = 0; y < bar.shape.length; y++) {
+            tmp[y] = [];
+            for (var x = 0; x < bar.shape[y].length; x++) {
+                tmp[y][x] = 0;
+            }
+        }
+        for (var y = 0; y < bar.shape.length; y++) {
+            for (var x = 0; x < bar.shape[y].length; x++) {
+                tmp[bar.shape.length - 1 - x][y] = 
+                        bar.shape[y][x];
+            }
+        }
+        if (canMove(1, 1, 1, bar)) bar.shape = tmp;
     }
     
     function update() {
         if (cursors.up.isDown && !cursors.up.repeats) {
-//            moveBar(false, true, true);
+            drawBar(0x99FFCC);
+            rotateBar();
+            drawBar(color);
         }
         if (cursors.down.isDown && !cursors.down.repeats) {
             loopTimer.delay = 10;
         }
         if (cursors.left.isDown && !cursors.left.repeats && 
-                canMove(true, false, false)) {
-            moveBar(true, false, false);
+                canMove(0, 1, 0, bar)) {
+            moveBar(-1, 0);
         }
         if (cursors.right.isDown && !cursors.right.repeats && 
-                canMove(true, false, true)) {
-            moveBar(true, false, true);
+                canMove(1, 0, 0, bar)) {
+            moveBar(1, 0);
         }
     }
 };
