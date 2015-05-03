@@ -54,11 +54,10 @@ _sgames.TetrisShapes = function() {
     ];
 
     this.getRand = function () {
-        var rand = Math.floor(Math.random() * bars.length);
         return {
-            shape: bars[rand],
+            shape: bars[Math.floor(Math.random() * bars.length)],
             topLeft: {x: 3, y: 0},
-            color: colors[rand]
+            color: colors[Math.floor(Math.random() * colors.length)]
             };
     };
     
@@ -79,33 +78,53 @@ _sgames.TetrisGlass = function(width, height) {
 
 _sgames.Tetris2 = function() {
     var game = new Phaser.Game(250, 500, Phaser.AUTO, 'tetris2', 
-        { create: create, update: update });
+        { create: create, update: update, render:render });
     var bar;
     var graphics;
     var timer;
-    var loopTimer;
     var cursors;
     var color;
-    var delay = 1000;
+    var stopedBar;
+    var delay;
     var step = 25;
-    var bars = new _sgames.TetrisShapes();
-    var glass = new _sgames.TetrisGlass(10, 20);
+    var bars;
+    var glass;
+    var score;
+    var level;
 
     function create () {
+        bars = new _sgames.TetrisShapes();
+        glass = new _sgames.TetrisGlass(10, 20);
+        stopedBar = [];
+        delay = 1000;
+        score = 0;
+        level = 1;
         graphics = game.add.graphics(0, 0);
         game.stage.backgroundColor = '#99FFCC';
         cursors = game.input.keyboard.createCursorKeys();
-        timer = game.time.create(false);
-        loopTimer = game.time.events.loop(delay, fallBar, this);
-        createBar();
-        timer.start();
+        timer = game.time.events.loop(delay, fallBar, this);
+        timer.timer.running = false;
     }
+    
+    this.startGame = function() {
+        game.time.events.remove(timer);
+        graphics.clear();
+        create();
+        createBar();
+        timer.timer.running = true;
+    };
+    
+    this.pauseGame = function() {
+        timer.timer.paused = !timer.timer.paused;
+        $("#butPause").text("Пауза");
+        if (timer.timer.paused) $("#butPause").text("Продолжить");
+     } 
 
     function createBar() {
-        loopTimer.delay = 1000;
+        timer.delay = delay;
         bar = bars.getRand();
         color = bar.color;
-        drawBar(color);
+        drawBar(color, bar);
     }
     
     function canMove(pX, mX, pY, test) {
@@ -130,7 +149,7 @@ _sgames.Tetris2 = function() {
         return true;
     }
 
-    function drawBar(color) {
+    function drawBar(color, bar) {
         for (var y = 0; y < bar.shape.length; y++) {
             for (var x = 0; x < bar.shape[y].length; x++) {
                 if (bar.shape[y][x] !== 0) {
@@ -143,35 +162,74 @@ _sgames.Tetris2 = function() {
         }
     }
     
-    function moveBar(dx, dy) {
-        drawBar(0x99FFCC);
+    function moveBar(dx, dy, bar) {
+        drawBar(0x99FFCC, bar);
         bar.topLeft.x += dx;
         bar.topLeft.y += dy;
-        drawBar(color);
+        drawBar(bar.color, bar);
     }
 
     function fallBar() {
         if (canMove(0, 0, 1, bar)) {
-            moveBar(0, 1);
+            moveBar(0, 1, bar);
         } else {
-            for (var y = 0; y < bar.shape.length; y++) {
-                for (var x = 0; x < bar.shape[y].length; x++) {
-                    if (bar.shape[y][x] !== 0) {
-                        glass[bar.topLeft.y + y][bar.topLeft.x + x] = 1;
-                    }
+            fillGlass();
+            stopedBar.push(bar);
+            var fullLines = checkLastLines();
+            if (fullLines) {
+                clearLayer(fullLines);
+                scoreCount(fullLines);
+            }
+            if (checkLine0()) {
+                timer.timer.running = false;
+            } else {
+                createBar();
+            } 
+
+        }
+    }
+    
+    function fillGlass() {
+        for (var y = 0; y < bar.shape.length; y++) {
+            for (var x = 0; x < bar.shape[y].length; x++) {
+                if (bar.shape[y][x] !== 0) {
+                    glass[bar.topLeft.y + y][bar.topLeft.x + x] = 1;
                 }
             }
-            createBar();
         }
+    }
+    
+    function clearLayer(fL) {
+        for (var y = 19; y > (19 - fL); y--) {
+            glass.pop();
+            glass.unshift([0,0,0,0,0,0,0,0,0,0]);
+        }
+        for (var i = 0; i < stopedBar.length; i++) {
+            moveBar(0, fL, stopedBar[i]);
+        }
+    }
+    
+    function checkLine0() {
+        for (var x = 0; x < glass[0].length; x++) {
+            if (glass[0][x] === 1) return true;
+        }
+    }
+    
+    function checkLastLines() {
+        var count = 0;
+        for (var y = 19; y > 15; y--) {
+            for (var x = 0; x < glass[y].length; x++) {
+                if (glass[y][x] === 0) return count;
+            }
+            count++;
+        }
+        return count;
     }
     
     function rotateBar() {
         var tmp = [];
         for (var y = 0; y < bar.shape.length; y++) {
             tmp[y] = [];
-            for (var x = 0; x < bar.shape[y].length; x++) {
-                tmp[y][x] = 0;
-            }
         }
         for (var y = 0; y < bar.shape.length; y++) {
             for (var x = 0; x < bar.shape[y].length; x++) {
@@ -182,24 +240,58 @@ _sgames.Tetris2 = function() {
         if (canMove(1, 1, 1, bar)) bar.shape = tmp;
     }
     
+    function scoreCount(fL) {
+        var addScr = 0;
+        switch(fL) {
+            case 1:
+                addScr = 10;
+                break;
+            case 2:
+                addScr = 30;
+                break;
+            case 3:
+                addScr = 60;
+                break;
+            case 4:
+                addScr = 100;
+                break;
+        }
+        score += addScr;
+        $("#score").text('Счёт: ' + score);
+        if (score >= 100 && score < 200) level = 2;
+        if (score >= 200 && score < 300) level = 3;
+        if (score >= 300 && score < 400) level = 4;
+        if (score >= 400 && score < 500) level = 5;
+        if (score >= 500 && score < 600) level = 6;
+        $("#level").text('Уровень: ' + level);
+        delay = 1000 - (100 * (level - 1));
+    };
+    
     function update() {
         if (cursors.up.isDown && !cursors.up.repeats) {
-            drawBar(0x99FFCC);
+            drawBar(0x99FFCC, bar);
             rotateBar();
-            drawBar(color);
+            drawBar(color, bar);
         }
         if (cursors.down.isDown && !cursors.down.repeats) {
-            loopTimer.delay = 10;
+            timer.delay = 10;
         }
         if (cursors.left.isDown && !cursors.left.repeats && 
                 canMove(0, 1, 0, bar)) {
-            moveBar(-1, 0);
+            moveBar(-1, 0, bar);
         }
         if (cursors.right.isDown && !cursors.right.repeats && 
                 canMove(1, 0, 0, bar)) {
-            moveBar(1, 0);
+            moveBar(1, 0, bar);
         }
     }
+    
+    function render() {
+
+    // Camera
+//    game.debug.cameraInfo(game.camera, 32, 32);
+
+}
 };
 
 _sgames.tetris2 = new _sgames.Tetris2();

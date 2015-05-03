@@ -93,4 +93,9 @@
   left: 10%;
 }
 
+#tetris2 {
+    position: absolute;
+    left: 20%;
+    top: 8%;
+}
 
