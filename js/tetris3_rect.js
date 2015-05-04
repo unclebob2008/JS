@@ -2,49 +2,57 @@
 
 "use strict";
 
-_sgames.Tetris2 = function() {
+_sgames.Tetris3 = function() {
     var game = new Phaser.Game(250, 500, Phaser.AUTO, 'tetris2', 
         { create: create, update: update });
-    var bars = [];
-    bars[0] = [100, 0, 100, 25, 100, 50, 125, 25];
-    var bar = [];
-    var stopedBar = [];
+    var bars = [
+        [100, 0, 100, 25, 100, 50, 125, 25], //T
+        [100, 0, 100, 25, 100, 50, 125, 50], //L-right
+        [100, 0, 100, 25, 100, 50, 75, 50], //L-left
+        [100, 0, 100, 25, 100, 50, 100, 75], //I
+        [100, 0, 125, 0, 100, 25, 125, 25], //cube
+        [100, 0, 100, 25, 125, 25, 125, 50], //S-left
+        [100, 0, 100, 25, 75, 25, 75, 50] //S-right
+    ];
+    var bar;
+    var stopedBar;
     var graphics;
-    var timer;
     var loopTimer;
-    var upKey;
-    var downKey;
-    var leftKey;
-    var rightKey;
     var cursors;
-    var delay = 1000;
+    var color;
+    var delay;
     var step = 25;
     var numb = 4;
+    var colors = [
+        0xFF0000, // red
+        0xFF3300, // orange
+        0xFFCC00, // yellow
+        0x009900, // green
+        0x00CCFF, // cyan
+        0x3399FF, // blue
+        0xCC00FF //violet
+    ];
 
     function create () {
+        bar = [];
+        stopedBar = [];
+        delay = 1000;
         graphics = game.add.graphics(0, 0);
         game.stage.backgroundColor = '#99FFCC';
         cursors = game.input.keyboard.createCursorKeys();
-//        upKey = game.input.keyboard.addKey(Phaser.Keyboard.UP);
-//        downKey = game.input.keyboard.addKey(Phaser.Keyboard.DOWN);
-//        leftKey = game.input.keyboard.addKey(Phaser.Keyboard.LEFT);
-//        rightKey = game.input.keyboard.addKey(Phaser.Keyboard.RIGHT);
-        timer = game.time.create(false);
         loopTimer = game.time.events.loop(delay, fallBar, this);
-//        timer.loop(delay, fallBar, this);
         createBar();
-        timer.start();
     }
-
+    
     function createBar() {
-        loopTimer.delay = 1000;
+        loopTimer.delay = delay;
+        var barInd = Math.floor(Math.random() * bars.length);
+        color = colors[Math.floor(Math.random() * colors.length)];
         for (var i = 0; i < numb; i++) {
-            bar[i] = new Phaser.Rectangle(bars[0][(i * 2)], 
-                 bars[0][((i * 2) + 1)], step, step);
-            graphics.beginFill(0xFF33ff);
-            graphics.drawRect(bar[i].x, bar[i].y, step, step);
-            graphics.endFill();
+            bar[i] = new Phaser.Rectangle(bars[barInd][(i * 2)], 
+                 bars[barInd][((i * 2) + 1)], step, step);
         }
+        drawBar(color);
     }
     
     function isCollide(xPlus, xMinus) {
@@ -93,24 +101,16 @@ _sgames.Tetris2 = function() {
         };
     }
 
-    function eraseBar() {
+    function drawBar(color) {
         for (var i=0; i < numb; i++) {
-            graphics.beginFill(0x99FFCC);
-            graphics.drawRect(bar[i].x, bar[i].y, step, step);
-            graphics.endFill();
-        }
-    }
-
-    function drawBar() {
-        for (var i=0; i < numb; i++) {
-            graphics.beginFill(0xFF33ff);
+            graphics.beginFill(color);
             graphics.drawRect(bar[i].x, bar[i].y, step, step);
             graphics.endFill();
         }
     }
     
     function moveBar(x, y, dir) {
-        eraseBar();
+        drawBar(0x99FFCC);
         var stepX = x ? step : 0;
         var stepY = y ? step : 0;
         stepX = dir ? stepX : -stepX;
@@ -118,7 +118,7 @@ _sgames.Tetris2 = function() {
             bar[i].x += stepX;
             bar[i].y += stepY;
         }
-        drawBar();
+        drawBar(color);
     }
 
     function fallBar() {
@@ -131,6 +131,15 @@ _sgames.Tetris2 = function() {
                 createBar();
             }
     }
+    
+//    function rotateBar() {
+//        for (var i=0; i < numb; i++) {
+//            tmp[numb - 1 - bar[i].x][y] = 
+//                    bar.shape[y][x];
+//        }
+//        if (canMove(1, 1, 1, bar)) bar.shape = tmp;
+//    }
+
     
     function update() {
         if (cursors.up.isDown && !cursors.up.repeats) {
@@ -150,4 +159,4 @@ _sgames.Tetris2 = function() {
     }
 };
 
-_sgames.tetris2 = new _sgames.Tetris2();
+_sgames.tetris3 = new _sgames.Tetris3();
