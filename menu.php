@@ -14,7 +14,7 @@
           <div class="menuBut"><a href="tetris2.php">Тетриc:Phaser-1</div>
         </td>
         <td>
-          <div class="menuBut"><a href="tetris3.php">Тетриc:Phaser-2</div>
+          <div class="menuBut"><a href="breakout.php">Breakout</div>
         </td>
       </tr>
     </table>

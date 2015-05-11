@@ -27,7 +27,7 @@ require_once('menu.php');
       </tr>
     </table>
 </div>
-<script src="js/jquery-2.1.3.js"></script>
+<script src="js/jquery-2.1.4.min.js"></script>
 <script src="js/_namespace.js"></script>
 <script src="js/tetris.js"></script>
 <script type="text/javascript">

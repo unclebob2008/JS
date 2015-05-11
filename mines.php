@@ -17,7 +17,7 @@ require_once('menu.php');
   <h3 id="baner"></h3>
 </div>
 
-  <script src="js/jquery-2.1.3.js"></script>
+  <script src="js/jquery-2.1.4.min.js"></script>
   <script src="js/_namespace.js"></script>
   <script src="js/matrix.js"></script>
 

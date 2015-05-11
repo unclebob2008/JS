@@ -27,14 +27,11 @@ require_once('menu.php');
     </table>
     <div id="tetris2"></div>
 </div>
-<script src="js/jquery-2.1.3.js"></script>
+<script src="js/jquery-2.1.4.min.js"></script>
 <script src="js/phaser.js"></script>
 <script src="js/_namespace.js"></script>
 <script src="js/tetris2.js"></script>
-<script>
-  _sgames.tetris2;
-</script>
 
-<?php
+    <?php
 require_once('footer.php');
 ?>

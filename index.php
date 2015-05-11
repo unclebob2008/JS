@@ -8,7 +8,7 @@ require_once('menu.php');
     <img id="smile3" src="images/smile3.jpg" alt="smile" onclick="_sgames.magic.clickImg();"/>
 </div>
 
-  <script src="js/jquery-2.1.3.js"></script>
+  <script src="js/jquery-2.1.4.min.js"></script>
   <script src="js/_namespace.js"></script>
   <script src="js/magic.js"></script>
 
