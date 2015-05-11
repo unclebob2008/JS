@@ -4,19 +4,20 @@
 
 _sgames.Breakout = function() {
     
+    var camAngle = 0;
+    
     var scene = new THREE.Scene();
     var camera = new THREE.PerspectiveCamera( 45, 600 / 400, 0.1, 1000 );
-    
-    var pointLight =
-    new THREE.PointLight(0xFFFFFF);
+//    var controls = new THREE.FirstPersonControls( camera );
+//    var pointLight = new THREE.PointLight(0xFFFFFF);
 
 // set its position
-    pointLight.position.x = 5
-    pointLight.position.y = 10;
-    pointLight.position.z = 10;
+//    pointLight.position.x = 5;
+//    pointLight.position.y = 10;
+//    pointLight.position.z = 10;
 
 // add to the scene
-    scene.add(pointLight);
+//    scene.add(pointLight);
     
 //   scene.add(camera);
     camera.position.z = 8;
@@ -26,13 +27,13 @@ _sgames.Breakout = function() {
     $("#mainDiv").append(renderer.domElement);
     
 
-    var boxGeometry = new THREE.BoxGeometry( 1, 1, 1 );
+    var boxGeometry = new THREE.BoxGeometry(1, 1, 1);
     
     var cubeMaterial = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
     var sphereMaterial = new THREE.MeshBasicMaterial({color: 0xcc0000});
 
     var cube = new THREE.Mesh( boxGeometry, cubeMaterial );
-    var sphere = new THREE.Mesh(new THREE.SphereGeometry(1, 0.1, 0.1),
+    var sphere = new THREE.Mesh(new THREE.SphereGeometry(2, 16, 16),
         sphereMaterial);
     
     sphere.position.x = -1.5;
@@ -43,10 +44,16 @@ _sgames.Breakout = function() {
 
     
     function render() {
-	requestAnimationFrame( render );
-//        cube.rotation.x += 0.01;
-//        cube.rotation.y += 0.01;
-	renderer.render( scene, camera );
+        if (camAngle < 2*Math.PI) {
+            camAngle += Math.PI/360;
+        } else camAngle = 0;
+        camera.position.z = 8*Math.cos(camAngle);
+        camera.position.x = 8*Math.sin(camAngle);
+        camera.lookAt(scene.position);
+//        console.log(Math.cos(camAngle));
+        requestAnimationFrame( render );
+        renderer.render( scene, camera );
+        
     }
     render();
  
