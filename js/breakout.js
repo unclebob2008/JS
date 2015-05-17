@@ -4,59 +4,90 @@
 
 _sgames.Breakout = function() {
     
-    var camAngle = 0;
+    var scene, camera, controls, renderer;
+    var clock = new THREE.Clock();
+    var gameW = $("#mainDiv").width();
+    var gameH = $("#mainDiv").height();
+    var MOVE_SPEED = 30;
+    var LOOK_SPEED = 0.05;
+    var HERO_H = 5;
+    var WORLD_SIZE = 100;
+    var WORLD_THICK = 0.5;
     
-    var scene = new THREE.Scene();
-    var camera = new THREE.PerspectiveCamera( 45, 600 / 400, 0.1, 1000 );
-//    var controls = new THREE.FirstPersonControls( camera );
-//    var pointLight = new THREE.PointLight(0xFFFFFF);
-
-// set its position
-//    pointLight.position.x = 5;
-//    pointLight.position.y = 10;
-//    pointLight.position.z = 10;
-
-// add to the scene
-//    scene.add(pointLight);
+    init();
+    animate();
     
-//   scene.add(camera);
-    camera.position.z = 8;
-
-    var renderer = new THREE.WebGLRenderer();
-    renderer.setSize( 600, 400 );
-    $("#mainDiv").append(renderer.domElement);
-    
-
-    var boxGeometry = new THREE.BoxGeometry(1, 1, 1);
-    
-    var cubeMaterial = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
-    var sphereMaterial = new THREE.MeshBasicMaterial({color: 0xcc0000});
-
-    var cube = new THREE.Mesh( boxGeometry, cubeMaterial );
-    var sphere = new THREE.Mesh(new THREE.SphereGeometry(2, 16, 16),
-        sphereMaterial);
-    
-    sphere.position.x = -1.5;
-    cube.position.x = 1.5;
- 
-    scene.add(sphere);
-    scene.add(cube);
-
-    
-    function render() {
-        if (camAngle < 2*Math.PI) {
-            camAngle += Math.PI/360;
-        } else camAngle = 0;
-        camera.position.z = 8*Math.cos(camAngle);
-        camera.position.x = 8*Math.sin(camAngle);
-        camera.lookAt(scene.position);
-//        console.log(Math.cos(camAngle));
-        requestAnimationFrame( render );
-        renderer.render( scene, camera );
+    function init() {
+        scene = new THREE.Scene();
         
+        camera = new THREE.PerspectiveCamera(60, gameW/gameH, 1, 10000);
+        camera.position.y = HERO_H;
+        camera.position.x = -(WORLD_SIZE/2 - 5);
+        
+        controls = new THREE.FirstPersonControls(camera);
+        controls.movementSpeed = MOVE_SPEED; // How fast the player can walk around
+        controls.lookSpeed = LOOK_SPEED; // How fast the player can look around with the mouse
+        controls.lookVertical = false; // Don't allow the player to look up or down. This is a temporary fix to keep people from flying
+
+        var directionalLight1 = new THREE.DirectionalLight(0xF7EFBE, 0.7);
+        directionalLight1.position.set(0.5, 1, 0.5);
+        scene.add(directionalLight1);
+        
+        var directionalLight2 = new THREE.DirectionalLight(0xF7EFBE, 0.5);
+        directionalLight2.position.set(-0.5, -1, -0.5);
+        scene.add(directionalLight2);
+        
+//        var ambientLight = new THREE.AmbientLight(0xcccccc);
+//        scene.add(ambientLight);
+
+        var brick = new THREE.MeshLambertMaterial(
+                {map: THREE.ImageUtils.loadTexture('images/brick_bump.jpg')});
+        var floor = new THREE.Mesh(new THREE.BoxGeometry(WORLD_SIZE, WORLD_THICK, WORLD_SIZE), brick);
+        scene.add(floor);
+
+        var wallF = new THREE.Mesh(new THREE.BoxGeometry(WORLD_THICK, 3*HERO_H, WORLD_SIZE), brick);
+        wallF.position.x = WORLD_SIZE/2;
+        wallF.position.y = HERO_H;
+        scene.add(wallF);
+
+        var wallR = new THREE.Mesh(new THREE.BoxGeometry(WORLD_SIZE, 3*HERO_H, WORLD_THICK), brick);
+        wallR.position.z = WORLD_SIZE/2;
+        wallR.position.y = HERO_H;
+        scene.add(wallR);
+
+        var wallL = new THREE.Mesh(new THREE.BoxGeometry(WORLD_SIZE, 3*HERO_H, WORLD_THICK), brick);
+        wallL.position.z = -WORLD_SIZE/2;
+        wallL.position.y = HERO_H;
+        scene.add(wallL);
+
+        var wallR = new THREE.Mesh(new THREE.BoxGeometry(WORLD_THICK, 3*HERO_H, WORLD_SIZE), brick);
+        wallR.position.x = -WORLD_SIZE/2;
+        wallR.position.y = HERO_H;
+        scene.add(wallR);
+        
+        renderer = new THREE.WebGLRenderer();
+        renderer.setClearColor(0x66ffcc);
+        renderer.setSize(gameW, gameH);
+        
+        $("#mainDiv").append(renderer.domElement);
+
     }
-    render();
+    
+    function animate() {
+        requestAnimationFrame(animate);
+        render();
+    }
+
+    function render() {
+//        if (controls.object.position.z >  WORLD_SIZE/2) controls.moveLeft = false;
+//        if (controls.object.position.z < -WORLD_SIZE/2) controls.moveRight = false;
+//        if (controls.object.position.x >  WORLD_SIZE/2) controls.moveBackward = false;
+//        if (controls.object.position.x < -WORLD_SIZE/2) controls.moveForward = false;
  
+        controls.update(clock.getDelta());
+        renderer.render(scene, camera);
+    }
+    
 };
 
 _sgames.breakout = new _sgames.Breakout();
